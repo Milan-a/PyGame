@@ -64,7 +64,7 @@ class Player:
                 if tile[1].colliderect(self.rect.x + dx, self.rect.y, self.width, self.height):
                     dx = 0
                     if tile[-1] == 'portal':
-                        pass
+                        return 'portal'
                 #  столкновения по y
                 if tile[1].colliderect(self.rect.x, self.rect.y + dy, self.width, self.height):
                     if self.speed_y < 0:
@@ -77,11 +77,11 @@ class Player:
             # проверка столкновений со всякими зловещими штуками
             if pygame.sprite.spritecollide(self, self.groups[0], False):
                 game_over -= 1
-                screen.blit(self.player_img, self.rect)  # отрисовка игрока
+                screen.blit(self.player_img, self.rect)
                 return game_over
             if pygame.sprite.spritecollide(self, self.groups[1], False):
                 game_over -= 1
-                screen.blit(self.player_img, self.rect)  # отрисовка игрока
+                screen.blit(self.player_img, self.rect)
                 return game_over
 
             self.move(dx, dy)

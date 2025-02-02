@@ -22,4 +22,4 @@ class Button:
 
         screen.blit(self.image, self.rect)
 
-        return do_click, self.button_type
+        return do_click
