@@ -4,8 +4,8 @@ from world import tile_list
 
 
 class Player:
-    def __init__(self, x, y, width, height, enemy_group, lava_group):
-        self.start(x, y, width, height, enemy_group, lava_group)
+    def __init__(self, x, y, width, height, enemy_group, lava_group, money_group):
+        self.start(x, y, width, height, enemy_group, lava_group, money_group)
 
     def animation(self, right, jump):  # сама анимация персонажа
         if not jump:
@@ -75,11 +75,11 @@ class Player:
                         self.on_flor = False
 
             # проверка столкновений со всякими зловещими штуками
-            if pygame.sprite.spritecollide(self, self.groups[0], False):
+            if pygame.sprite.spritecollide(self, self.groups[0], False):  # enemy
                 game_over -= 1
                 screen.blit(self.player_img, self.rect)
                 return game_over
-            if pygame.sprite.spritecollide(self, self.groups[1], False):
+            if pygame.sprite.spritecollide(self, self.groups[1], False):  # lava
                 game_over -= 1
                 screen.blit(self.player_img, self.rect)
                 return game_over
@@ -91,8 +91,8 @@ class Player:
         self.rect.x += dx
         self.rect.y += dy
 
-    def start(self, x, y, width, height, enemy_group, lava_group):
-        self.groups = (enemy_group, lava_group)
+    def start(self, x, y, width, height, enemy_group, lava_group, money_group):
+        self.groups = (enemy_group, lava_group, money_group)
         self.width = width
         self.height = height
         self.walk_right = []

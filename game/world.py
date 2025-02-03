@@ -1,6 +1,7 @@
 import pygame
 from const import *
 from enemy import Enemy
+from money import Money
 from lava import Lava
 
 tile_list = []
@@ -20,10 +21,10 @@ def draw_world(screen):  # рисуем блоки
 
 
 class World:
-    def __init__(self, data, enemy_group, lava_group):
-        self.start(data, enemy_group, lava_group)
+    def __init__(self, data, enemy_group, lava_group, money_group):
+        self.start(data, enemy_group, lava_group, money_group)
 
-    def start(self, data, enemy_group, lava_group):
+    def start(self, data, enemy_group, lava_group, money_group):
         tile_list.clear()
         # заглушка на случай ошибки
         img11 = pygame.image.load('data/images/blocks/block_11.png')
@@ -43,6 +44,10 @@ class World:
                 elif block == 'l':  # лава
                     lava = Lava(TILE_SIZE * j, TILE_SIZE * i)
                     lava_group.add(lava)
+                elif block == 'm':  # монетки
+                    money = Money(TILE_SIZE * j + (TILE_SIZE // 2), TILE_SIZE * i + (TILE_SIZE // 2))
+                    money_group.add(money)
+
                 else:
                     try:
                         img = pygame.image.load(f'data/images/blocks/block_{block}.png')
