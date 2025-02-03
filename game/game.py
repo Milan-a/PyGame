@@ -8,9 +8,10 @@ from button import Button
 # важные значения
 GAME_OVER = 0
 MENU = True
+LVL = 1
 
 pygame.init()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+screen = pygame.display.set_mode((WIDTH - 2, HEIGHT - 2))
 pygame.display.set_caption("Miner")  # типо 'шахтёр'
 icon = pygame.image.load('data/images/icon.png')
 pygame.display.set_icon(icon)
@@ -21,7 +22,7 @@ clock = pygame.time.Clock()
 enemy_group = pygame.sprite.Group()
 lava_group = pygame.sprite.Group()
 
-level = load_level('level_1.txt')
+level = load_level(f'level_{LVL}.txt')
 world = World(level, enemy_group, lava_group)
 player = Player(TILE_SIZE + TILE_SIZE * 0.1, HEIGHT - TILE_SIZE * 4,
                 TILE_SIZE - TILE_SIZE * 0.08, TILE_SIZE + TILE_SIZE * 0.2, enemy_group, lava_group)
@@ -54,7 +55,7 @@ def draw():  # вспомогательная функция, рисующая �
 
 
 def main():
-    global MENU
+    global MENU, world, enemy_group, lava_group, LVL, level
     clock.tick(FPS)
 
     running = True
@@ -69,7 +70,17 @@ def main():
         else:
             draw_world(screen)  # рисуем мир
             game_over = player.move_player(screen, GAME_OVER)  # рисуем игрока
-
+            if game_over == 'portal':
+                enemy_group = pygame.sprite.Group()
+                lava_group = pygame.sprite.Group()
+                LVL += 1
+                try:
+                    level = load_level(f'level_{LVL}.txt')
+                    world = World(level, enemy_group, lava_group)
+                    player.start(TILE_SIZE + TILE_SIZE * 0.1, HEIGHT - TILE_SIZE * 4,
+                                 TILE_SIZE - TILE_SIZE * 0.08, TILE_SIZE + TILE_SIZE * 0.2, enemy_group, lava_group)
+                except FileNotFoundError:
+                    print('you win')
             if game_over != -1:
                 enemy_group.update()
             enemy_group.draw(screen)
