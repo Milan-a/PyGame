@@ -20,7 +20,9 @@ pygame.display.set_icon(icon)
 bg_image = pygame.image.load('data/images/background_1.png')
 bg_image = pygame.transform.scale(bg_image, SIZE)
 clock = pygame.time.Clock()
+
 font1 = pygame.font.SysFont('Playbill', 40)
+font2 = pygame.font.SysFont('Playbill', 55)
 # OCR A Extended, Cooper Black, Playbill, Bauhaus 93, Showcard Gothic, Wide Latin
 
 win_image = pygame.image.load('data/images/background _ win.jpg')
@@ -75,10 +77,10 @@ def play_reboot():  # начинаем игру с самого нуля
                  enemy_group, lava_group, money_group)
 
 
-def draw():  # вспомогательная функция, рисующая сетку на экране
-    for line in range(20):
-        pygame.draw.line(screen, (255, 255, 255), (0, line * TILE_SIZE), (WIDTH, line * TILE_SIZE))
-        pygame.draw.line(screen, (255, 255, 255), (line * TILE_SIZE, 0), (line * TILE_SIZE, HEIGHT))
+# def draw():  # вспомогательная функция, рисующая сетку на экране
+#     for line in range(20):
+#         pygame.draw.line(screen, (255, 255, 255), (0, line * TILE_SIZE), (WIDTH, line * TILE_SIZE))
+#         pygame.draw.line(screen, (255, 255, 255), (line * TILE_SIZE, 0), (line * TILE_SIZE, HEIGHT))
 
 
 def main():
@@ -115,6 +117,7 @@ def main():
                         WIN = True
                 if game_over is None:
                     enemy_group.update()
+                    money_group.update()
                     if pygame.sprite.spritecollide(player, money_group, True):
                         SCORE += 1
                     draw_text(screen, f'Score: {SCORE}', font1, 'black', 570, 6)
@@ -132,6 +135,9 @@ def main():
                     fon = fon.convert_alpha()
                     fon.fill((255, 0, 0, 100))
                     screen.blit(fon, (0, 0))
+
+                    draw_text(screen, f'Score: {SCORE}, LVL: {LVL}', font2, 'black', 285, 260)
+                    draw_text(screen, f'Score: {SCORE}, LVL: {LVL}', font2, 'white', 287, 258)
 
                     if button_for_menu.draw(screen):
                         MENU = True
