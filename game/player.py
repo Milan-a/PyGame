@@ -8,7 +8,7 @@ class Player:
     def __init__(self, x, y, width, height, enemy_group, lava_group, money_group):
         self.start(x, y, width, height, enemy_group, lava_group, money_group)
 
-    def animation(self, right, jump):  # сама анимация персонажа
+    def animation(self, right, jump):  # анимация персонажа
         if not jump:
             self.count += 1
             if self.count > ANIM_SPEED:
@@ -24,7 +24,7 @@ class Player:
             else:
                 self.player_img = self.walk_left[1]
 
-    def move_player(self, screen, game_over):  # кое как живущая конструкция обработки кнопок для анимации персонажа
+    def move_player(self, screen, game_over):  # кое как живущая конструкция обработки кнопок для движения персонажа
         dx = 0
         dy = 0
         if game_over == 0:
@@ -79,9 +79,9 @@ class Player:
             if pygame.sprite.spritecollide(self, self.groups[0], False):  # enemy
                 game_over = life.rip(screen)
                 screen.blit(self.player_img, self.rect)
-                if game_over:
+                if game_over:  # не осталось жизней
                     return game_over
-                else:
+                else:  # ещё есть жизни
                     return 'rip'
             if pygame.sprite.spritecollide(self, self.groups[1], False):  # lava
                 game_over = life.rip(screen)
@@ -94,11 +94,11 @@ class Player:
             self.move(dx, dy)
             screen.blit(self.player_img, self.rect)  # отрисовка игрока
 
-    def move(self, dx, dy):
+    def move(self, dx, dy):  # передвижение
         self.rect.x += dx
         self.rect.y += dy
 
-    def start(self, x, y, width, height, enemy_group, lava_group, money_group):
+    def start(self, x, y, width, height, enemy_group, lava_group, money_group):  # = __init__
         self.groups = (enemy_group, lava_group, money_group)
         self.width = width
         self.height = height

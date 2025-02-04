@@ -3,7 +3,6 @@ import pygame
 
 class Life:  # класс жизни 0_0
     def __init__(self, screen):
-
         self.all_images = []
         for i in range(0, 6):
             img = pygame.image.load(f'data/images/life/hearts_{i}.png')
@@ -17,7 +16,7 @@ class Life:  # класс жизни 0_0
         self.rect.y = 10
         self.draw(screen)
 
-    def rip(self, screen):
+    def rip(self, screen):   # проверяем, умер ли игрок
         self.num_image -= 1
         try:
             self.image = self.all_images[self.num_image]
@@ -27,10 +26,10 @@ class Life:  # класс жизни 0_0
         except IndexError:
             return -1
 
-    def new_game(self, screen):
+    def new_game(self, screen):  # обнуляем значения
         self.num_image = -1
         self.image = self.all_images[self.num_image]
         self.draw(screen)
 
-    def draw(self, screen):
+    def draw(self, screen):  # отрисовка
         screen.blit(self.image, (self.rect.x, self.rect.y))

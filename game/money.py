@@ -5,7 +5,6 @@ from const import TILE_SIZE
 class Money(pygame.sprite.Sprite):  # класс монеток
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-
         self.all_images = []
         for i in range(1, 7):
             img = pygame.image.load(f'data/images/money/coin_{i}.png')

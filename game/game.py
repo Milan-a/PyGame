@@ -5,14 +5,7 @@ from world import World, draw_world
 from help_funс import load_level, draw_text
 from button import Button
 from intermediary import life, screen, new_life
-
-# важные значения
-GAME_OVER = 0
-MENU = True
-LVL = 1
-SCORE = 0
-WIN = False
-LIVE = 5
+from variables import *
 
 pygame.init()
 pygame.display.set_caption("Miner")  # типо 'шахтёр'
@@ -61,13 +54,13 @@ button_for_play = Button(WIDTH // 2 - 60, HEIGHT // 2 + 10, play_image, 'play')
 
 
 def play_reboot():  # начинаем игру с самого нуля
-    global GAME_OVER, MENU, LVL, SCORE, WIN, LIVE, world, level, enemy_group, lava_group, money_group
+    global GAME_OVER, MENU, LVL, SCORE, WIN, LIFE, world, level, enemy_group, lava_group, money_group
     GAME_OVER = 0
     MENU = True
     LVL = 1
     SCORE = 0
     WIN = False
-    LIVE = 5
+    LIFE = 5
     new_life()
     level = load_level(f'level_{LVL}.txt')
     enemy_group = pygame.sprite.Group()
@@ -80,30 +73,31 @@ def play_reboot():  # начинаем игру с самого нуля
 
 
 def main():
-    global MENU, SCORE, WIN, world, enemy_group, lava_group, LVL, level, money_group, bg_image
+    global MENU, SCORE, WIN, LVL, LIFE, world, enemy_group, lava_group, level, money_group, bg_image
     clock.tick(FPS)
 
     running = True
     while running:
-        if WIN:
+        if WIN:  # если игрок выиграл, рисуем картинку win_image
             screen.blit(win_image, (0, 0))
         else:
             screen.blit(bg_image, (0, 0))
             if MENU:
-                if button_for_start.draw(screen):
+                if button_for_start.draw(screen):  # нажали кнопку 'старт' => начинаем с нуля
                     play_reboot()
                     MENU = False
-                if button_for_exit.draw(screen):
+                if button_for_exit.draw(screen):  # нажали кнопку 'выйти' => выходим
                     running = False
             else:
                 draw_world(screen)  # рисуем мир
                 life.draw(screen)
                 game_over = player.move_player(screen, GAME_OVER)  # рисуем игрока
-                if game_over == 'rip':
+                if game_over == 'rip':  # игрок умер, но у него остались жизни
+                    LIFE -= 1
                     player.start(TILE_SIZE + TILE_SIZE * 0.1, HEIGHT - TILE_SIZE * 4,
                                  TILE_SIZE - TILE_SIZE * 0.08, TILE_SIZE + TILE_SIZE * 0.2,
                                  enemy_group, lava_group, money_group)
-                if game_over == 'portal':
+                if game_over == 'portal':  # игрок пересёкся с порталом
                     enemy_group = pygame.sprite.Group()
                     lava_group = pygame.sprite.Group()
                     money_group = pygame.sprite.Group()
@@ -116,10 +110,10 @@ def main():
                                      enemy_group, lava_group, money_group)
                     except FileNotFoundError:  # если падает с ошибкой, значит мы выиграли
                         WIN = True
-                if game_over is None:
+                if game_over is None:  # игра не закончена
                     enemy_group.update()
                     money_group.update()
-                    if pygame.sprite.spritecollide(player, money_group, True):
+                    if pygame.sprite.spritecollide(player, money_group, True):  # пересечение с монеткой
                         SCORE += 1
                     draw_text(screen, f'Score: {SCORE}', font1, 'black', 570, 6)
                     draw_text(screen, f'Score: {SCORE}', font1, 'white', 572, 5)
@@ -131,8 +125,8 @@ def main():
                 lava_group.draw(screen)
                 money_group.draw(screen)
 
-                if game_over == -1:
-                    fon = pygame.Surface((WIDTH, HEIGHT))
+                if game_over == -1:  # игра закончена
+                    fon = pygame.Surface((WIDTH, HEIGHT))  # красный фон
                     fon = fon.convert_alpha()
                     fon.fill((255, 0, 0, 100))
                     screen.blit(fon, (0, 0))
@@ -140,15 +134,15 @@ def main():
                     draw_text(screen, f'Score: {SCORE}, LVL: {LVL}', font2, 'black', 285, 260)
                     draw_text(screen, f'Score: {SCORE}, LVL: {LVL}', font2, 'white', 287, 258)
 
-                    if button_for_menu.draw(screen):
+                    if button_for_menu.draw(screen):  # нажали кнопку 'меню'
                         MENU = True
-                    if button_for_play.draw(screen):
+                    if button_for_play.draw(screen):  # нажали 'играть' => начинаем с нуля
                         play_reboot()
                         MENU = False
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if WIN and pygame.mouse.get_pressed()[0]:
+            if WIN and pygame.mouse.get_pressed()[0]:  # выиграли + нажали на кнопку мыши => перезапускаем игру
                 play_reboot()
         pygame.display.update()
     pygame.quit()

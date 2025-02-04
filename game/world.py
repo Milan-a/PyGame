@@ -20,11 +20,11 @@ def draw_world(screen):  # рисуем блоки
         screen.blit(block, coord)
 
 
-class World:
+class World:  # класс мира / блоков
     def __init__(self, data, enemy_group, lava_group, money_group):
         self.start(data, enemy_group, lava_group, money_group)
 
-    def start(self, data, enemy_group, lava_group, money_group):
+    def start(self, data, enemy_group, lava_group, money_group):   # = __init__
         tile_list.clear()
         # заглушка на случай ошибки
         img11 = pygame.image.load('data/images/blocks/block_11.png')

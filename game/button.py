@@ -10,7 +10,7 @@ class Button:
         self.rect.y = y
         self.is_click = False
 
-    def draw(self, screen):
+    def draw(self, screen):  # отрисовка + проверка нажатий
         do_click = False
         pos = pygame.mouse.get_pos()
         if self.rect.collidepoint(pos):

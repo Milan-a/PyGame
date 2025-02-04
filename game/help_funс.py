@@ -1,4 +1,4 @@
-def load_level(filename):
+def load_level(filename):  # загрузка уровня
     filename = "data/levels/" + filename
     with open(filename, 'r') as mapFile:
         level_map = [line.split() for line in mapFile]
@@ -9,6 +9,6 @@ def next_level(lvl):
     return load_level(f'level_{lvl}.txt')
 
 
-def draw_text(screen, text, font, t_color, x, y):
+def draw_text(screen, text, font, t_color, x, y):  # написание текста
     txt = font.render(text, True, t_color)
     screen.blit(txt, (x, y))
