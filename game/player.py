@@ -1,5 +1,6 @@
 import pygame
 from const import PLAYER_SPEED, JUMP_HEIGHT, ANIM_SPEED
+from intermediary import life
 from world import tile_list
 
 
@@ -76,13 +77,19 @@ class Player:
 
             # проверка столкновений со всякими зловещими штуками
             if pygame.sprite.spritecollide(self, self.groups[0], False):  # enemy
-                game_over -= 1
+                game_over = life.rip(screen)
                 screen.blit(self.player_img, self.rect)
-                return game_over
+                if game_over:
+                    return game_over
+                else:
+                    return 'rip'
             if pygame.sprite.spritecollide(self, self.groups[1], False):  # lava
-                game_over -= 1
+                game_over = life.rip(screen)
                 screen.blit(self.player_img, self.rect)
-                return game_over
+                if game_over:
+                    return game_over
+                else:
+                    return 'rip'
 
             self.move(dx, dy)
             screen.blit(self.player_img, self.rect)  # отрисовка игрока

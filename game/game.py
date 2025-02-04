@@ -4,16 +4,17 @@ from player import Player
 from world import World, draw_world
 from help_funс import load_level, draw_text
 from button import Button
+from intermediary import life, screen, new_life
 
 # важные значения
 GAME_OVER = 0
 MENU = True
-LVL = 3
+LVL = 1
 SCORE = 0
 WIN = False
+LIVE = 5
 
 pygame.init()
-screen = pygame.display.set_mode((WIDTH - 2, HEIGHT - 2))
 pygame.display.set_caption("Miner")  # типо 'шахтёр'
 icon = pygame.image.load('data/images/icon.png')
 pygame.display.set_icon(icon)
@@ -60,13 +61,14 @@ button_for_play = Button(WIDTH // 2 - 60, HEIGHT // 2 + 10, play_image, 'play')
 
 
 def play_reboot():  # начинаем игру с самого нуля
-    global GAME_OVER, MENU, LVL, SCORE, WIN, world, level, enemy_group, lava_group, money_group
+    global GAME_OVER, MENU, LVL, SCORE, WIN, LIVE, world, level, enemy_group, lava_group, money_group
     GAME_OVER = 0
     MENU = True
     LVL = 1
     SCORE = 0
     WIN = False
-    LVL = 1
+    LIVE = 5
+    new_life()
     level = load_level(f'level_{LVL}.txt')
     enemy_group = pygame.sprite.Group()
     lava_group = pygame.sprite.Group()
@@ -75,12 +77,6 @@ def play_reboot():  # начинаем игру с самого нуля
     player.start(TILE_SIZE + TILE_SIZE * 0.1, HEIGHT - TILE_SIZE * 4,
                  TILE_SIZE - TILE_SIZE * 0.08, TILE_SIZE + TILE_SIZE * 0.2,
                  enemy_group, lava_group, money_group)
-
-
-# def draw():  # вспомогательная функция, рисующая сетку на экране
-#     for line in range(20):
-#         pygame.draw.line(screen, (255, 255, 255), (0, line * TILE_SIZE), (WIDTH, line * TILE_SIZE))
-#         pygame.draw.line(screen, (255, 255, 255), (line * TILE_SIZE, 0), (line * TILE_SIZE, HEIGHT))
 
 
 def main():
@@ -101,7 +97,12 @@ def main():
                     running = False
             else:
                 draw_world(screen)  # рисуем мир
+                life.draw(screen)
                 game_over = player.move_player(screen, GAME_OVER)  # рисуем игрока
+                if game_over == 'rip':
+                    player.start(TILE_SIZE + TILE_SIZE * 0.1, HEIGHT - TILE_SIZE * 4,
+                                 TILE_SIZE - TILE_SIZE * 0.08, TILE_SIZE + TILE_SIZE * 0.2,
+                                 enemy_group, lava_group, money_group)
                 if game_over == 'portal':
                     enemy_group = pygame.sprite.Group()
                     lava_group = pygame.sprite.Group()
@@ -142,10 +143,8 @@ def main():
                     if button_for_menu.draw(screen):
                         MENU = True
                     if button_for_play.draw(screen):
-                        player.start(TILE_SIZE + TILE_SIZE * 0.1, HEIGHT - TILE_SIZE * 4,
-                                     TILE_SIZE - TILE_SIZE * 0.08, TILE_SIZE + TILE_SIZE * 0.2,
-                                     enemy_group, lava_group, money_group)
-
+                        play_reboot()
+                        MENU = False
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False

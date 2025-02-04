@@ -1,5 +1,5 @@
 import pygame
-from const import TILE_SIZE, ANIM_SPEED
+from const import TILE_SIZE
 
 
 class Money(pygame.sprite.Sprite):  # класс монеток
