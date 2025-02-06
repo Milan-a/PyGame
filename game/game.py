@@ -15,9 +15,22 @@ bg_image = pygame.image.load('data/images/background_1.png')
 bg_image = pygame.transform.scale(bg_image, SIZE)
 clock = pygame.time.Clock()
 
+# Загрузка звуков
+pygame.mixer.init()
+pygame.mixer.music.load('data/sounds/Music.mp3')  # Фоновая музыка
+pygame.mixer.music.play(loops=-1)  # Зациклить музыку
+pygame.mixer.music.set_volume(0.4)  # Громкость фоновой музыки
+# Звуки завершения уровня и выигрыша
+level_win_sound = pygame.mixer.Sound('data/sounds/LevelWin.mp3')
+level_win_sound.set_volume(0.5)
+win_sound = pygame.mixer.Sound('data/sounds/Win.mp3')
+foot_steps_sound = pygame.mixer.Sound('data/sounds/Footsteps.mp3')  # Звук шагов
+damage_sound = pygame.mixer.Sound('data/sounds/Damage.mp3')  # Звук получения урона
+money_sound = pygame.mixer.Sound('data/sounds/Money.mp3')  # Звук поднятия денег
+game_over_sound = pygame.mixer.Sound('data/sounds/GameOver.mp3')  # Звук при окончании игры
+
 font1 = pygame.font.SysFont('Playbill', 40)
 font2 = pygame.font.SysFont('Playbill', 55)
-# OCR A Extended, Cooper Black, Playbill, Bauhaus 93, Showcard Gothic, Wide Latin
 
 win_image = pygame.image.load('data/images/background _ win.jpg')
 win_image = pygame.transform.scale(win_image, SIZE)
@@ -54,35 +67,57 @@ button_for_play = Button(WIDTH // 2 - 60, HEIGHT // 2 + 10, play_image, 'play')
 
 
 def play_reboot():  # начинаем игру с самого нуля
-    global GAME_OVER, MENU, LVL, SCORE, WIN, LIFE, world, level, enemy_group, lava_group, money_group
+    global GAME_OVER, MENU, LVL, SCORE, WIN, LIFE, world, level, enemy_group, lava_group, money_group, player, win_sound_played
     GAME_OVER = 0
-    MENU = True
+    MENU = False  # Начинаем с отключенного меню
     LVL = 1
-    SCORE = 0
+    SCORE = 0  # Сброс счета
     WIN = False
-    LIFE = 5
+    LIFE = 5  # Восстановление жизней
+    win_sound_played = False  # Сбрасываем флаг звука выигрыша
     new_life()
-    level = load_level(f'level_{LVL}.txt')
+
+    # Перезагрузить все игровые группы
     enemy_group = pygame.sprite.Group()
     lava_group = pygame.sprite.Group()
     money_group = pygame.sprite.Group()
+
+    # Загрузка первого уровня
+    level = load_level(f'level_{LVL}.txt')
     world = World(level, enemy_group, lava_group, money_group)
-    player.start(TILE_SIZE + TILE_SIZE * 0.1, HEIGHT - TILE_SIZE * 4,
-                 TILE_SIZE - TILE_SIZE * 0.08, TILE_SIZE + TILE_SIZE * 0.2,
-                 enemy_group, lava_group, money_group)
+
+    # Заново инициализировать игрока
+    player = Player(TILE_SIZE + TILE_SIZE * 0.1, HEIGHT - TILE_SIZE * 4,
+                    TILE_SIZE - TILE_SIZE * 0.08, TILE_SIZE + TILE_SIZE * 0.2,
+                    enemy_group, lava_group, money_group)
+
+    # Перезапуск музыки
+    pygame.mixer.music.stop()
+    pygame.mixer.music.play(loops=-1)  # Зациклить музыку
+
+
+game_over_sound_played = False  # Флаг для отслеживания воспроизведения звука Game Over
+win_sound_played = False  # Флаг для отслеживания воспроизведения звука You Win
 
 
 def main():
-    global MENU, SCORE, WIN, LVL, LIFE, world, enemy_group, lava_group, level, money_group, bg_image
+    global MENU, SCORE, WIN, LVL, LIFE, world, enemy_group, lava_group, level, money_group, bg_image, game_over_sound_played
     clock.tick(FPS)
 
     running = True
     while running:
         if WIN:  # если игрок выиграл, рисуем картинку win_image
             screen.blit(win_image, (0, 0))
+            player.toggle_step_sound(False)  # Выключаем звуки шагов
+            global win_sound_played  # Используем глобальный флаг
+            if not win_sound_played:  # Если звук еще не был воспроизведен
+                pygame.mixer.music.stop()
+                win_sound.play()  # Воспроизвести звук выигрыша
+                win_sound_played = True  # Устанавливаем флаг
         else:
             screen.blit(bg_image, (0, 0))
             if MENU:
+                pygame.mixer.music.stop()
                 if button_for_start.draw(screen):  # нажали кнопку 'старт' => начинаем с нуля
                     play_reboot()
                     MENU = False
@@ -94,6 +129,7 @@ def main():
                 game_over = player.move_player(screen, GAME_OVER)  # рисуем игрока
                 if game_over == 'rip':  # игрок умер, но у него остались жизни
                     LIFE -= 1
+                    damage_sound.play()  # Звук получения урона
                     player.start(TILE_SIZE + TILE_SIZE * 0.1, HEIGHT - TILE_SIZE * 4,
                                  TILE_SIZE - TILE_SIZE * 0.08, TILE_SIZE + TILE_SIZE * 0.2,
                                  enemy_group, lava_group, money_group)
@@ -105,16 +141,20 @@ def main():
                     try:  # если уровень загружается, то продолжаем играть
                         level = load_level(f'level_{LVL}.txt')
                         world = World(level, enemy_group, lava_group, money_group)
+                        level_win_sound.play()  # Воспроизводим звук завершения уровня
                         player.start(TILE_SIZE + TILE_SIZE * 0.1, HEIGHT - TILE_SIZE * 4,
                                      TILE_SIZE - TILE_SIZE * 0.08, TILE_SIZE + TILE_SIZE * 0.2,
                                      enemy_group, lava_group, money_group)
                     except FileNotFoundError:  # если падает с ошибкой, значит мы выиграли
                         WIN = True
+
                 if game_over is None:  # игра не закончена
                     enemy_group.update()
                     money_group.update()
                     if pygame.sprite.spritecollide(player, money_group, True):  # пересечение с монеткой
                         SCORE += 1
+                        money_sound.play()  # Звук поднятия монеты
+
                     draw_text(screen, f'Score: {SCORE}', font1, 'black', 570, 6)
                     draw_text(screen, f'Score: {SCORE}', font1, 'white', 572, 5)
 
@@ -131,14 +171,22 @@ def main():
                     fon.fill((255, 0, 0, 100))
                     screen.blit(fon, (0, 0))
 
+                    pygame.mixer.music.stop()  # Остановить фоновую музыку
+
+                    if not game_over_sound_played:
+                        game_over_sound.play()
+                        game_over_sound_played = True
+
                     draw_text(screen, f'Score: {SCORE}, LVL: {LVL}', font2, 'black', 285, 260)
                     draw_text(screen, f'Score: {SCORE}, LVL: {LVL}', font2, 'white', 287, 258)
 
                     if button_for_menu.draw(screen):  # нажали кнопку 'меню'
                         MENU = True
+                        game_over_sound_played = False  # Сброс флага на случай перезапуска через меню
                     if button_for_play.draw(screen):  # нажали 'играть' => начинаем с нуля
+                        game_over_sound_played = False  # Сбрасываем флаг при новом запуске игры
                         play_reboot()
-                        MENU = False
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
