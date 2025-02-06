@@ -67,13 +67,12 @@ button_for_play = Button(WIDTH // 2 - 60, HEIGHT // 2 + 10, play_image, 'play')
 
 
 def play_reboot():  # начинаем игру с самого нуля
-    global GAME_OVER, MENU, LVL, SCORE, WIN, LIFE, world, level, enemy_group, lava_group, money_group, player, win_sound_played
+    global GAME_OVER, MENU, LVL, SCORE, WIN, world, level, enemy_group, lava_group, money_group, player, win_sound_played
     GAME_OVER = 0
     MENU = False  # Начинаем с отключенного меню
     LVL = 1
     SCORE = 0  # Сброс счета
     WIN = False
-    LIFE = 5  # Восстановление жизней
     win_sound_played = False  # Сбрасываем флаг звука выигрыша
     new_life()
 
@@ -101,13 +100,15 @@ win_sound_played = False  # Флаг для отслеживания воспр�
 
 
 def main():
-    global MENU, SCORE, WIN, LVL, LIFE, world, enemy_group, lava_group, level, money_group, bg_image, game_over_sound_played
+    global MENU, SCORE, WIN, LVL, world, enemy_group, lava_group, level, money_group, bg_image, game_over_sound_played
     clock.tick(FPS)
 
     running = True
     while running:
         if WIN:  # если игрок выиграл, рисуем картинку win_image
             screen.blit(win_image, (0, 0))
+            draw_text(screen, f'Your score: {SCORE}', font2, 'black', 305, 460)
+            draw_text(screen, f'Your score: {SCORE}', font2, 'orange', 307, 456)
             player.toggle_step_sound(False)  # Выключаем звуки шагов
             global win_sound_played  # Используем глобальный флаг
             if not win_sound_played:  # Если звук еще не был воспроизведен
@@ -128,7 +129,6 @@ def main():
                 life.draw(screen)
                 game_over = player.move_player(screen, GAME_OVER)  # рисуем игрока
                 if game_over == 'rip':  # игрок умер, но у него остались жизни
-                    LIFE -= 1
                     damage_sound.play()  # Звук получения урона
                     player.start(TILE_SIZE + TILE_SIZE * 0.1, HEIGHT - TILE_SIZE * 4,
                                  TILE_SIZE - TILE_SIZE * 0.08, TILE_SIZE + TILE_SIZE * 0.2,
@@ -192,6 +192,7 @@ def main():
                 running = False
             if WIN and pygame.mouse.get_pressed()[0]:  # выиграли + нажали на кнопку мыши => перезапускаем игру
                 play_reboot()
+                win_sound.stop()
         pygame.display.update()
     pygame.quit()
 

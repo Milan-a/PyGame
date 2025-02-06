@@ -16,7 +16,7 @@ class Life:  # класс жизни 0_0
         self.rect.y = 10
         self.draw(screen)
 
-    def rip(self, screen):   # проверяем, умер ли игрок
+    def rip(self, screen):  # проверяем, умер ли игрок
         self.num_image -= 1
         try:
             self.image = self.all_images[self.num_image]
