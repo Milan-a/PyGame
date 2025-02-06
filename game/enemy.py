@@ -18,14 +18,19 @@ class Enemy(pygame.sprite.Sprite):  # класс приведений
         self.move = 1
         self.count_move = 0
 
-    def update(self):  # перемещение преведений
-        self.rect.x += self.move
-        self.count_move += 1
-        if abs(self.count_move) >= TILE_SIZE:
-            self.move *= -1
-            self.count_move *= -1
+        self.speed = 0
 
-            if self.images_r_l.index(self.image) == 1:  # зеркалим изображение
-                self.image = self.images_r_l[0]
-            else:
-                self.image = self.images_r_l[1]
+    def update(self):  # перемещение преведений
+        self.speed += 1
+        if self.speed == 2:
+            self.speed = 0
+            self.rect.x += self.move
+            self.count_move += 1
+            if abs(self.count_move) >= TILE_SIZE:
+                self.move *= -1
+                self.count_move *= -1
+
+                if self.images_r_l.index(self.image) == 1:  # зеркалим изображение
+                    self.image = self.images_r_l[0]
+                else:
+                    self.image = self.images_r_l[1]

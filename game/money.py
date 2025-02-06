@@ -15,7 +15,7 @@ class Money(pygame.sprite.Sprite):  # класс монеток
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         self.count = 0
-        self.speed = 10
+        self.speed = 20
         self.id = 0
 
     def update(self):  # анимация

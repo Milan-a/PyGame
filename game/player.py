@@ -67,13 +67,19 @@ class Player:
                 self.is_jump = False
 
             if key[pygame.K_LEFT]:
-                dx -= PLAYER_SPEED
+                self.c += 1
+                if self.speed_x <= self.c:
+                    dx -= PLAYER_SPEED
+                    self.c = 0
                 self.walk_pos = False
                 is_walking = True  # Игрок движется
                 if not key[pygame.K_SPACE]:
                     self.animation(False, self.is_jump)
             if key[pygame.K_RIGHT]:
-                dx += PLAYER_SPEED
+                self.c += 1
+                if self.speed_x <= self.c:
+                    dx += PLAYER_SPEED
+                    self.c = 0
                 self.walk_pos = True
                 is_walking = True  # Игрок движется
                 if not key[pygame.K_SPACE]:
@@ -87,8 +93,8 @@ class Player:
                     self.player_img = self.walk_left[self.walk_id]
 
             self.speed_y += 1
-            if self.speed_y > 5:
-                self.speed_y = 5
+            if self.speed_y > 2:
+                self.speed_y = 2
             dy += self.speed_y
 
             self.on_flor = True
@@ -160,6 +166,8 @@ class Player:
         self.rect = self.player_img.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.c = 0
+        self.speed_x = 2
         self.speed_y = 0
         self.is_jump = False
         self.on_flor = True
