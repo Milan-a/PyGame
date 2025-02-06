@@ -1,4 +1,4 @@
-WIDTH, HEIGHT = 800, 800
+WIDTH, HEIGHT = 750, 750
 SIZE = (WIDTH, HEIGHT)
 FPS = 60
 PLAYER_SPEED = 2  # скорость ходьбы игрока

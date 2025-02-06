@@ -8,7 +8,7 @@ from intermediary import life, screen, new_life
 from variables import *
 
 pygame.init()
-pygame.display.set_caption("Miner")  # типо 'шахтёр'
+pygame.display.set_caption("Miner")  # 'шахтёр'
 icon = pygame.image.load('data/images/icon.png')
 pygame.display.set_icon(icon)
 bg_image = pygame.image.load('data/images/background_1.png')
@@ -107,8 +107,8 @@ def main():
     while running:
         if WIN:  # если игрок выиграл, рисуем картинку win_image
             screen.blit(win_image, (0, 0))
-            draw_text(screen, f'Your score: {SCORE}', font2, 'black', 305, 460)
-            draw_text(screen, f'Your score: {SCORE}', font2, 'orange', 307, 456)
+            draw_text(screen, f'Your score: {SCORE}', font2, 'black', TILE_SIZE * 7 - 17, TILE_SIZE * 10 - 8)
+            draw_text(screen, f'Your score: {SCORE}', font2, 'orange', TILE_SIZE * 7 - 15, TILE_SIZE * 10 - 10)
             player.toggle_step_sound(False)  # Выключаем звуки шагов
             global win_sound_played  # Используем глобальный флаг
             if not win_sound_played:  # Если звук еще не был воспроизведен
@@ -155,11 +155,11 @@ def main():
                         SCORE += 1
                         money_sound.play()  # Звук поднятия монеты
 
-                    draw_text(screen, f'Score: {SCORE}', font1, 'black', 570, 6)
-                    draw_text(screen, f'Score: {SCORE}', font1, 'white', 572, 5)
+                    draw_text(screen, f'Score: {SCORE}', font1, 'black', TILE_SIZE * 12, 6)
+                    draw_text(screen, f'Score: {SCORE}', font1, 'white', TILE_SIZE * 12 + 2, 5)
 
-                    draw_text(screen, f'LVL: {LVL}', font1, 'black', WIDTH - 102, 6)
-                    draw_text(screen, f'LVL: {LVL}', font1, 'white', WIDTH - 100, 5)
+                    draw_text(screen, f'LVL: {LVL}', font1, 'black', WIDTH - (TILE_SIZE * 2 + 2), 6)
+                    draw_text(screen, f'LVL: {LVL}', font1, 'white', WIDTH - TILE_SIZE * 2, 5)
 
                 enemy_group.draw(screen)
                 lava_group.draw(screen)
@@ -177,8 +177,8 @@ def main():
                         game_over_sound.play()
                         game_over_sound_played = True
 
-                    draw_text(screen, f'Score: {SCORE}, LVL: {LVL}', font2, 'black', 285, 260)
-                    draw_text(screen, f'Score: {SCORE}, LVL: {LVL}', font2, 'white', 287, 258)
+                    draw_text(screen, f'Score: {SCORE}, LVL: {LVL}', font2, 'black', TILE_SIZE * 6 - 2, TILE_SIZE * 6)
+                    draw_text(screen, f'Score: {SCORE}, LVL: {LVL}', font2, 'white', TILE_SIZE * 6, TILE_SIZE * 6 - 2)
 
                     if button_for_menu.draw(screen):  # нажали кнопку 'меню'
                         MENU = True
