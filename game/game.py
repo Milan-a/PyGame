@@ -8,7 +8,7 @@ from intermediary import life, screen, new_life
 from variables import *
 
 pygame.init()
-pygame.display.set_caption("Miner")  # 'шахтёр'
+pygame.display.set_caption("Call of the Wild")
 icon = pygame.image.load('data/images/icon.png')
 pygame.display.set_icon(icon)
 bg_image = pygame.image.load('data/images/background_1.png')
@@ -19,7 +19,7 @@ clock = pygame.time.Clock()
 pygame.mixer.init()
 pygame.mixer.music.load('data/sounds/Music.mp3')  # Фоновая музыка
 pygame.mixer.music.play(loops=-1)  # Зациклить музыку
-pygame.mixer.music.set_volume(0.4)  # Громкость фоновой музыки
+pygame.mixer.music.set_volume(0.2)  # Громкость фоновой музыки
 # Звуки завершения уровня и выигрыша
 level_win_sound = pygame.mixer.Sound('data/sounds/LevelWin.mp3')
 level_win_sound.set_volume(0.5)
@@ -101,10 +101,10 @@ win_sound_played = False  # Флаг для отслеживания воспр�
 
 def main():
     global MENU, SCORE, WIN, LVL, world, enemy_group, lava_group, level, money_group, bg_image, game_over_sound_played
-    clock.tick(FPS)
 
     running = True
     while running:
+        clock.tick(FPS)
         if WIN:  # если игрок выиграл, рисуем картинку win_image
             screen.blit(win_image, (0, 0))
             draw_text(screen, f'Your score: {SCORE}', font2, 'black', TILE_SIZE * 7 - 17, TILE_SIZE * 10 - 8)
